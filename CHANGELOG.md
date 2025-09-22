@@ -1,3 +1,17 @@
+
+## [0.5.0] - 2025-09-22
+
+### Changed
+
+- Updated ROADMAP.md to reflect the full, multi-phase project vision and current progress.
+- Added a prioritized feature list for both free and premium tiers.
+- Updated README.md to clarify next steps and immediate priorities.
+# [0.4.1] - 2025-09-22
+
+### Changed
+
+- Removed duplicate "+ Add Recipe" button from the top of the app for a cleaner, less confusing user experience. The button is now only in the recipe list/filter area.
+
 # Changelog
 
 ## [0.4.0] - 2025-09-22
