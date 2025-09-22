@@ -22,12 +22,29 @@ type Ingredient = {
   cost: string; // keep as string for input
 };
 
-export default function RecipeEntry() {
-  const [recipeName, setRecipeName] = useState("");
-  const [servings, setServings] = useState(1);
-  const [ingredients, setIngredients] = useState<Ingredient[]>([
-    { name: "", quantity: 1, cost: "" },
-  ]);
+interface Recipe {
+  name: string;
+  servings: number;
+  ingredients: Ingredient[];
+  totalCost: number;
+  costPerServing: number;
+  createdAt: number;
+}
+
+interface RecipeEntryProps {
+  initialRecipe?: Recipe;
+  onSave?: (recipe: Recipe) => void;
+  onCancel?: () => void;
+  isEditMode?: boolean;
+}
+
+export default function RecipeEntry(props: RecipeEntryProps = {}) {
+  const { initialRecipe, onSave, onCancel, isEditMode } = props;
+  const [recipeName, setRecipeName] = useState(initialRecipe?.name || "");
+  const [servings, setServings] = useState(initialRecipe?.servings || 1);
+  const [ingredients, setIngredients] = useState<Ingredient[]>(
+    initialRecipe?.ingredients || [{ name: "", quantity: 1, cost: "" }]
+  );
 
   // Calculate total cost and cost per serving
   const totalCost = ingredients.reduce(
@@ -80,33 +97,35 @@ export default function RecipeEntry() {
         parseFloat(ing.cost) >= 0
     );
 
-  // Save recipe to localStorage
+  // Save or update recipe
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
-    const newRecipe = {
+    const newRecipe: Recipe = {
       name: recipeName,
       servings,
       ingredients,
       totalCost,
       costPerServing,
-      createdAt: Date.now(),
+      createdAt: initialRecipe?.createdAt || Date.now(),
     };
-    // Get existing recipes
-    const existing = localStorage.getItem("recipes");
-    let recipes = [];
-    try {
-      recipes = existing ? JSON.parse(existing) : [];
-    } catch {
-      recipes = [];
+    if (isEditMode && onSave) {
+      onSave(newRecipe);
+    } else {
+      // Add new recipe to localStorage
+      const existing = localStorage.getItem("recipes");
+      let recipes = [];
+      try {
+        recipes = existing ? JSON.parse(existing) : [];
+      } catch {
+        recipes = [];
+      }
+      recipes.push(newRecipe);
+      localStorage.setItem("recipes", JSON.stringify(recipes));
+      setRecipeName("");
+      setServings(1);
+      setIngredients([{ name: "", quantity: 1, cost: "" }]);
     }
-    recipes.push(newRecipe);
-    localStorage.setItem("recipes", JSON.stringify(recipes));
-    // Optionally, clear form after save
-    setRecipeName("");
-    setServings(1);
-    setIngredients([{ name: "", quantity: 1, cost: "" }]);
-    // Optionally, show a success message (not implemented yet)
   };
 
   return (
@@ -120,7 +139,7 @@ export default function RecipeEntry() {
       boxShadow="md"
     >
       <Heading as="h2" size="lg" mb={4} textAlign="center">
-        Add a Recipe
+        {isEditMode ? "Edit Recipe" : "Add a Recipe"}
       </Heading>
       <form onSubmit={handleSubmit}>
         <Stack spacing={4}>
@@ -210,8 +229,13 @@ export default function RecipeEntry() {
             </Text>
           </Box>
           <Button colorScheme="green" type="submit" isDisabled={!isFormValid}>
-            Save Recipe
+            {isEditMode ? "Save Changes" : "Save Recipe"}
           </Button>
+          {isEditMode && onCancel && (
+            <Button onClick={onCancel} colorScheme="gray" variant="outline">
+              Cancel
+            </Button>
+          )}
         </Stack>
       </form>
     </Box>
