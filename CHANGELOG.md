@@ -1,3 +1,9 @@
+## [0.8.0] - 2025-09-22
+
+### Added
+
+- Categories/tags: You can now add tags to recipes, see them in the recipe list, and filter recipes by tag/category.
+
 ## [0.7.0] - 2025-09-22
 
 ### Added

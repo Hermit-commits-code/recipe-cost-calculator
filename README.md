@@ -16,15 +16,22 @@ This is a privacy-first PWA for tracking and optimizing recipe costs. Built with
 
 See [ROADMAP.md](./ROADMAP.md) for the full, multi-phase roadmap and current progress.
 
+
 ### Immediate Priorities
 
 - ~~Polish mobile UX & responsive layout~~ (done)
 - ~~Add recipe import/export (JSON)~~ (done)
 - ~~Build a basic analytics dashboard~~ (done)
-- Add recipe organization (categories/tags)
+- ~~Add recipe organization (categories/tags)~~ (done)
 - Complete full PWA support
 
 Premium and advanced features will follow after these core improvements.
+
+---
+
+## Recipe Organization (Categories/Tags)
+
+You can now add categories/tags to recipes, see them in the recipe list, and filter recipes by tag/category.
 
 ---
 
