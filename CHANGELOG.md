@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added
+
+- Scaffolded project folders: components (with recipe, analytics, premium, ui), hooks, utils, contexts.
+- Created initial component files: RecipeEntry, IngredientEntry, RecipeCard (placeholders).
+
 ### Changed
 
 - Switched project styling from Tailwind CSS to Chakra UI for easier setup and modern component-based styling.
