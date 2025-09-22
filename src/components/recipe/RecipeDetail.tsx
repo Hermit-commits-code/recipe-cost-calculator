@@ -1,5 +1,6 @@
-import { Box, Heading, Text, Stack, Divider } from "@chakra-ui/react";
-import { useState } from "react";
+import { Box, Heading, Text, Stack, Divider, Button } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 interface Ingredient {
   name: string;
@@ -16,16 +17,53 @@ interface Recipe {
   createdAt: number;
 }
 
-interface RecipeDetailProps {
-  recipe: Recipe;
-  onBack: () => void;
-  onEdit?: (recipe: Recipe) => void;
-  onDelete?: (recipe: Recipe) => void;
-}
-
-export default function RecipeDetail(props: RecipeDetailProps) {
-  const { recipe, onBack, onEdit, onDelete } = props;
+export default function RecipeDetail() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    const stored = localStorage.getItem("recipes");
+    if (stored) {
+      try {
+        const recipes: Recipe[] = JSON.parse(stored);
+        const found = recipes.find((r) => String(r.createdAt) === id);
+        setRecipe(found || null);
+      } catch {
+        setRecipe(null);
+      }
+    }
+  }, [id]);
+
+  if (!recipe) {
+    return (
+      <Box maxW="lg" mx="auto" mt={8} p={6} textAlign="center">
+        <Heading as="h2" size="lg" mb={4}>
+          Recipe Not Found
+        </Heading>
+        <Button colorScheme="blue" onClick={() => navigate("/")}>
+          Back to List
+        </Button>
+      </Box>
+    );
+  }
+
+  const handleDelete = () => {
+    const stored = localStorage.getItem("recipes");
+    if (stored) {
+      try {
+        const recipes: Recipe[] = JSON.parse(stored);
+        const updated = recipes.filter((r) => r.createdAt !== recipe.createdAt);
+        localStorage.setItem("recipes", JSON.stringify(updated));
+      } catch {
+        // Ignore JSON parse errors
+      }
+    }
+    navigate("/");
+  };
+
   return (
     <Box
       maxW="lg"
@@ -59,95 +97,36 @@ export default function RecipeDetail(props: RecipeDetailProps) {
         Cost per Serving: ${recipe.costPerServing.toFixed(2)}
       </Text>
       <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
-        <button
-          onClick={onBack}
-          style={{
-            padding: "8px 16px",
-            borderRadius: 4,
-            background: "#3182ce",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
+        <Button colorScheme="blue" onClick={() => navigate("/")}>
           Back to List
-        </button>
-        {onEdit && (
-          <button
-            onClick={() => onEdit(recipe)}
-            style={{
-              padding: "8px 16px",
-              borderRadius: 4,
-              background: "#38a169",
-              color: "white",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Edit
-          </button>
-        )}
-        {onDelete && (
-          <button
-            onClick={() => setShowConfirm(true)}
-            style={{
-              padding: "8px 16px",
-              borderRadius: 4,
-              background: "#e53e3e",
-              color: "white",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Delete
-          </button>
-        )}
+        </Button>
+        <Button
+          colorScheme="green"
+          onClick={() => navigate(`/edit/${recipe.createdAt}`)}
+        >
+          Edit
+        </Button>
+        <Button colorScheme="red" onClick={() => setShowConfirm(true)}>
+          Delete
+        </Button>
       </div>
       {showConfirm && (
-        <div
-          style={{
-            marginTop: 24,
-            background: "#fff5f5",
-            border: "1px solid #e53e3e",
-            borderRadius: 8,
-            padding: 16,
-            textAlign: "center",
-          }}
+        <Box
+          mt={6}
+          bg="#fff5f5"
+          border="1px solid #e53e3e"
+          borderRadius={8}
+          p={4}
+          textAlign="center"
         >
           <Text mb={2} color="red.600">
             Are you sure you want to delete this recipe?
           </Text>
-          <button
-            onClick={() => {
-              if (onDelete) onDelete(recipe);
-              setShowConfirm(false);
-            }}
-            style={{
-              padding: "8px 16px",
-              borderRadius: 4,
-              background: "#e53e3e",
-              color: "white",
-              border: "none",
-              cursor: "pointer",
-              marginRight: 8,
-            }}
-          >
+          <Button colorScheme="red" mr={2} onClick={handleDelete}>
             Yes, Delete
-          </button>
-          <button
-            onClick={() => setShowConfirm(false)}
-            style={{
-              padding: "8px 16px",
-              borderRadius: 4,
-              background: "#a0aec0",
-              color: "white",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Cancel
-          </button>
-        </div>
+          </Button>
+          <Button onClick={() => setShowConfirm(false)}>Cancel</Button>
+        </Box>
       )}
     </Box>
   );

@@ -14,8 +14,7 @@ interface Recipe {
   createdAt: number;
 }
 import { useEffect, useState } from "react";
-import RecipeDetail from "./RecipeDetail";
-import RecipeEntry from "./RecipeEntry";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Heading,
@@ -34,15 +33,15 @@ import {
   NumberInputField,
   Flex,
   Icon,
+  Button,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 
 function RecipeList() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [selected, setSelected] = useState<Recipe | null>(null);
-  const [editing, setEditing] = useState<Recipe | null>(null);
   const [search, setSearch] = useState("");
   const [maxCost, setMaxCost] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const stored = localStorage.getItem("recipes");
@@ -53,49 +52,7 @@ function RecipeList() {
         setRecipes([]);
       }
     }
-  }, [editing]);
-
-  // Handler to save edited recipe
-  const handleEditSave = (updatedRecipe: Recipe) => {
-    const updated = recipes.map((r) =>
-      r.createdAt === updatedRecipe.createdAt ? updatedRecipe : r
-    );
-    setRecipes(updated);
-    localStorage.setItem("recipes", JSON.stringify(updated));
-    setEditing(null);
-    setSelected(null);
-  };
-
-  if (editing) {
-    // Show RecipeEntry in edit mode, pre-filled
-    return (
-      <RecipeEntry
-        initialRecipe={editing}
-        onSave={handleEditSave}
-        onCancel={() => setEditing(null)}
-        isEditMode
-      />
-    );
-  }
-
-  // Handler to delete recipe
-  const handleDelete = (toDelete: Recipe) => {
-    const updated = recipes.filter((r) => r.createdAt !== toDelete.createdAt);
-    setRecipes(updated);
-    localStorage.setItem("recipes", JSON.stringify(updated));
-    setSelected(null);
-  };
-
-  if (selected) {
-    return (
-      <RecipeDetail
-        recipe={selected}
-        onBack={() => setSelected(null)}
-        onEdit={(r) => setEditing(r)}
-        onDelete={handleDelete}
-      />
-    );
-  }
+  }, []);
 
   if (recipes.length === 0) {
     return (
@@ -104,6 +61,9 @@ function RecipeList() {
           Saved Recipes
         </Heading>
         <Text>No recipes saved yet.</Text>
+        <Button mt={4} colorScheme="teal" onClick={() => navigate("/add")}>
+          + Add Recipe
+        </Button>
       </Box>
     );
   }
@@ -142,6 +102,9 @@ function RecipeList() {
         >
           <NumberInputField placeholder="Max $/serving" bg="white" />
         </NumberInput>
+        <Button colorScheme="teal" onClick={() => navigate("/add")}>
+          + Add Recipe
+        </Button>
       </Flex>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
         {filtered.map((recipe, idx) => (
@@ -150,7 +113,7 @@ function RecipeList() {
             boxShadow="md"
             borderWidth={1}
             _hover={{ cursor: "pointer", bg: "gray.50" }}
-            onClick={() => setSelected(recipe)}
+            onClick={() => navigate(`/recipe/${recipe.createdAt}`)}
           >
             <CardHeader>
               <Heading as="h3" size="md">

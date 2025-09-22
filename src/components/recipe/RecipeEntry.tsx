@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Heading,
@@ -39,14 +40,34 @@ interface RecipeEntryProps {
 }
 
 export default function RecipeEntry(props: RecipeEntryProps = {}) {
-  const { initialRecipe, onSave, onCancel, isEditMode } = props;
+  const { initialRecipe, isEditMode } = props;
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [recipeName, setRecipeName] = useState(initialRecipe?.name || "");
   const [servings, setServings] = useState(initialRecipe?.servings || 1);
   const [ingredients, setIngredients] = useState<Ingredient[]>(
     initialRecipe?.ingredients || [{ name: "", quantity: 1, cost: "" }]
   );
 
-  // Calculate total cost and cost per serving
+  useEffect(() => {
+    if (isEditMode && id) {
+      const stored = localStorage.getItem("recipes");
+      if (stored) {
+        try {
+          const recipes: Recipe[] = JSON.parse(stored);
+          const found = recipes.find((r) => String(r.createdAt) === id);
+          if (found) {
+            setRecipeName(found.name);
+            setServings(found.servings);
+            setIngredients(found.ingredients);
+          }
+        } catch {
+          // Ignore JSON parse errors
+        }
+      }
+    }
+  }, [isEditMode, id]);
+
   const totalCost = ingredients.reduce(
     (sum, ing) =>
       sum + (isNaN(parseFloat(ing.cost)) ? 0 : parseFloat(ing.cost)),
@@ -54,7 +75,6 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
   );
   const costPerServing = servings > 0 ? totalCost / servings : 0;
 
-  // Handlers
   const handleIngredientChange = (
     idx: number,
     field: keyof Ingredient,
@@ -84,7 +104,6 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
     setIngredients((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  // Simple validation
   const isFormValid =
     recipeName.trim() !== "" &&
     servings > 0 &&
@@ -97,7 +116,6 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
         parseFloat(ing.cost) >= 0
     );
 
-  // Save or update recipe
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
@@ -107,12 +125,23 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
       ingredients,
       totalCost,
       costPerServing,
-      createdAt: initialRecipe?.createdAt || Date.now(),
+      createdAt:
+        isEditMode && id ? Number(id) : initialRecipe?.createdAt || Date.now(),
     };
-    if (isEditMode && onSave) {
-      onSave(newRecipe);
+    if (isEditMode && id) {
+      const existing = localStorage.getItem("recipes");
+      let recipes = [];
+      try {
+        recipes = existing ? JSON.parse(existing) : [];
+      } catch {
+        recipes = [];
+      }
+      const updated = recipes.map((r: Recipe) =>
+        String(r.createdAt) === id ? newRecipe : r
+      );
+      localStorage.setItem("recipes", JSON.stringify(updated));
+      navigate(`/recipe/${id}`);
     } else {
-      // Add new recipe to localStorage
       const existing = localStorage.getItem("recipes");
       let recipes = [];
       try {
@@ -125,6 +154,7 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
       setRecipeName("");
       setServings(1);
       setIngredients([{ name: "", quantity: 1, cost: "" }]);
+      navigate("/");
     }
   };
 
@@ -231,8 +261,12 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
           <Button colorScheme="green" type="submit" isDisabled={!isFormValid}>
             {isEditMode ? "Save Changes" : "Save Recipe"}
           </Button>
-          {isEditMode && onCancel && (
-            <Button onClick={onCancel} colorScheme="gray" variant="outline">
+          {isEditMode && (
+            <Button
+              onClick={() => navigate(id ? `/recipe/${id}` : "/")}
+              colorScheme="gray"
+              variant="outline"
+            >
               Cancel
             </Button>
           )}
