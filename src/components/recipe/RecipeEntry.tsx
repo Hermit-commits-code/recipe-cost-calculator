@@ -19,19 +19,20 @@ import { DeleteIcon } from "@chakra-ui/icons";
 type Ingredient = {
   name: string;
   quantity: number;
-  cost: number;
+  cost: string; // keep as string for input
 };
 
 export default function RecipeEntry() {
   const [recipeName, setRecipeName] = useState("");
   const [servings, setServings] = useState(1);
   const [ingredients, setIngredients] = useState<Ingredient[]>([
-    { name: "", quantity: 1, cost: 0 },
+    { name: "", quantity: 1, cost: "" },
   ]);
 
   // Calculate total cost and cost per serving
   const totalCost = ingredients.reduce(
-    (sum, ing) => sum + (isNaN(ing.cost) ? 0 : ing.cost),
+    (sum, ing) =>
+      sum + (isNaN(parseFloat(ing.cost)) ? 0 : parseFloat(ing.cost)),
     0
   );
   const costPerServing = servings > 0 ? totalCost / servings : 0;
@@ -43,16 +44,23 @@ export default function RecipeEntry() {
     value: string | number
   ) => {
     setIngredients((prev) =>
-      prev.map((ing, i) =>
-        i === idx
-          ? { ...ing, [field]: field === "name" ? value : Number(value) }
-          : ing
-      )
+      prev.map((ing, i) => {
+        if (i !== idx) return ing;
+        if (field === "cost") {
+          return { ...ing, cost: String(value) };
+        } else if (field === "quantity") {
+          return { ...ing, quantity: Number(value) };
+        } else if (field === "name") {
+          return { ...ing, name: String(value) };
+        } else {
+          return ing;
+        }
+      })
     );
   };
 
   const addIngredient = () => {
-    setIngredients((prev) => [...prev, { name: "", quantity: 1, cost: 0 }]);
+    setIngredients((prev) => [...prev, { name: "", quantity: 1, cost: "" }]);
   };
 
   const removeIngredient = (idx: number) => {
@@ -64,8 +72,42 @@ export default function RecipeEntry() {
     recipeName.trim() !== "" &&
     servings > 0 &&
     ingredients.every(
-      (ing) => ing.name.trim() !== "" && ing.quantity > 0 && ing.cost >= 0
+      (ing) =>
+        ing.name.trim() !== "" &&
+        ing.quantity > 0 &&
+        ing.cost !== "" &&
+        !isNaN(parseFloat(ing.cost)) &&
+        parseFloat(ing.cost) >= 0
     );
+
+  // Save recipe to localStorage
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isFormValid) return;
+    const newRecipe = {
+      name: recipeName,
+      servings,
+      ingredients,
+      totalCost,
+      costPerServing,
+      createdAt: Date.now(),
+    };
+    // Get existing recipes
+    const existing = localStorage.getItem("recipes");
+    let recipes = [];
+    try {
+      recipes = existing ? JSON.parse(existing) : [];
+    } catch {
+      recipes = [];
+    }
+    recipes.push(newRecipe);
+    localStorage.setItem("recipes", JSON.stringify(recipes));
+    // Optionally, clear form after save
+    setRecipeName("");
+    setServings(1);
+    setIngredients([{ name: "", quantity: 1, cost: "" }]);
+    // Optionally, show a success message (not implemented yet)
+  };
 
   return (
     <Box
@@ -80,7 +122,7 @@ export default function RecipeEntry() {
       <Heading as="h2" size="lg" mb={4} textAlign="center">
         Add a Recipe
       </Heading>
-      <form>
+      <form onSubmit={handleSubmit}>
         <Stack spacing={4}>
           <FormControl isRequired>
             <FormLabel>Recipe Name</FormLabel>
@@ -130,14 +172,17 @@ export default function RecipeEntry() {
               </FormControl>
               <FormControl isRequired w="140px">
                 <FormLabel>Cost ($)</FormLabel>
-                <NumberInput
-                  min={0}
-                  precision={2}
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  inputMode="decimal"
                   value={ing.cost}
-                  onChange={(_, n) => handleIngredientChange(idx, "cost", n)}
-                >
-                  <NumberInputField />
-                </NumberInput>
+                  onChange={(e) =>
+                    handleIngredientChange(idx, "cost", e.target.value)
+                  }
+                  placeholder="e.g. 2.50"
+                />
               </FormControl>
               <IconButton
                 aria-label="Remove ingredient"
