@@ -16,15 +16,22 @@ This is a privacy-first PWA for tracking and optimizing recipe costs. Built with
 
 See [ROADMAP.md](./ROADMAP.md) for the full, multi-phase roadmap and current progress.
 
+
 ### Immediate Priorities
 
-- Polish mobile UX & responsive layout
-- Add recipe import/export (JSON)
-- Build a basic analytics dashboard
+- ~~Polish mobile UX & responsive layout~~ (done)
+- ~~Add recipe import/export (JSON)~~ (done)
+- ~~Build a basic analytics dashboard~~ (done)
 - Add recipe organization (categories/tags)
 - Complete full PWA support
 
 Premium and advanced features will follow after these core improvements.
+
+---
+
+## Analytics Dashboard
+
+You can now view your most/least expensive recipes, average cost per serving, and top ingredients by usage. Click the "Analytics" button in the main navigation.
 
 ---
 

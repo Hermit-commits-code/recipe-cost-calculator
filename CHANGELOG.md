@@ -1,3 +1,16 @@
+## [0.7.0] - 2025-09-22
+
+### Added
+
+- Basic analytics dashboard: shows most/least expensive recipes, average cost per serving, and top ingredients by usage. Accessible from the main navigation.
+
+## [0.6.0] - 2025-09-22
+
+### Added
+
+- Users can now export all recipes as a JSON file and import recipes from a JSON file in the recipe list view.
+- Import/export includes validation and user-friendly error handling. Importing replaces all recipes.
+
 ## [0.5.0] - 2025-09-22
 
 ### Changed
