@@ -16,7 +16,6 @@ This is a privacy-first PWA for tracking and optimizing recipe costs. Built with
 
 See [ROADMAP.md](./ROADMAP.md) for the full, multi-phase roadmap and current progress.
 
-
 ### Immediate Priorities
 
 - ~~Polish mobile UX & responsive layout~~ (done)

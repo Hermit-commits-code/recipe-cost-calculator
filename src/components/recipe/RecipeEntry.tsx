@@ -8,7 +8,6 @@ import {
   Input,
   Button,
   Stack,
-  HStack,
   NumberInput,
   NumberInputField,
   Text,
@@ -30,6 +29,7 @@ interface Recipe {
   totalCost: number;
   costPerServing: number;
   createdAt: number;
+  tags?: string[];
 }
 
 interface RecipeEntryProps {
@@ -48,6 +48,8 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
   const [ingredients, setIngredients] = useState<Ingredient[]>(
     initialRecipe?.ingredients || [{ name: "", quantity: 1, cost: "" }]
   );
+  const [tags, setTags] = useState<string[]>(initialRecipe?.tags || []);
+  const [tagInput, setTagInput] = useState("");
 
   useEffect(() => {
     if (isEditMode && id) {
@@ -60,6 +62,7 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
             setRecipeName(found.name);
             setServings(found.servings);
             setIngredients(found.ingredients);
+            setTags(found.tags || []);
           }
         } catch {
           // Ignore JSON parse errors
@@ -127,6 +130,7 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
       costPerServing,
       createdAt:
         isEditMode && id ? Number(id) : initialRecipe?.createdAt || Date.now(),
+      tags,
     };
     if (isEditMode && id) {
       const existing = localStorage.getItem("recipes");
@@ -188,6 +192,41 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
               placeholder="e.g. Spaghetti Bolognese"
               fontSize={{ base: "sm", md: "md" }}
             />
+          </FormControl>
+          <FormControl>
+            <FormLabel fontSize={{ base: "sm", md: "md" }}>
+              Categories/Tags
+            </FormLabel>
+            <Input
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={(e) => {
+                if ((e.key === "Enter" || e.key === ",") && tagInput.trim()) {
+                  e.preventDefault();
+                  if (!tags.includes(tagInput.trim().toLowerCase())) {
+                    setTags([...tags, tagInput.trim().toLowerCase()]);
+                  }
+                  setTagInput("");
+                } else if (e.key === "Backspace" && !tagInput && tags.length) {
+                  setTags(tags.slice(0, -1));
+                }
+              }}
+              placeholder="e.g. dinner, pasta, vegetarian"
+              fontSize={{ base: "sm", md: "md" }}
+            />
+            <Stack direction="row" spacing={2} mt={2} wrap="wrap">
+              {tags.map((tag, i) => (
+                <Button
+                  key={tag}
+                  size="xs"
+                  colorScheme="teal"
+                  variant="solid"
+                  onClick={() => setTags(tags.filter((_, idx) => idx !== i))}
+                >
+                  {tag} ×
+                </Button>
+              ))}
+            </Stack>
           </FormControl>
           <FormControl isRequired>
             <FormLabel fontSize={{ base: "sm", md: "md" }}>Servings</FormLabel>

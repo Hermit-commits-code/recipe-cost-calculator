@@ -14,10 +14,22 @@ function App() {
           Recipe Cost Calculator
         </Heading>
         <Flex mb={4} justify="center" gap={4}>
-          <Button as={RouterLink} to="/" colorScheme="teal" variant="ghost" size="sm">
+          <Button
+            as={RouterLink}
+            to="/"
+            colorScheme="teal"
+            variant="ghost"
+            size="sm"
+          >
             Recipes
           </Button>
-          <Button as={RouterLink} to="/analytics" colorScheme="teal" variant="ghost" size="sm">
+          <Button
+            as={RouterLink}
+            to="/analytics"
+            colorScheme="teal"
+            variant="ghost"
+            size="sm"
+          >
             Analytics
           </Button>
         </Flex>

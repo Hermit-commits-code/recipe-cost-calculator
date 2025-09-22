@@ -1,5 +1,16 @@
 import { useEffect, useState } from "react";
-import { Box, Heading, Text, SimpleGrid, Stat, StatLabel, StatNumber, StatHelpText, Stack, Divider } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Text,
+  SimpleGrid,
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
+  Stack,
+  Divider,
+} from "@chakra-ui/react";
 
 interface Ingredient {
   name: string;
@@ -32,18 +43,29 @@ export default function AnalyticsDashboard() {
 
   if (recipes.length === 0) {
     return (
-      <Box maxW={{ base: "100%", md: "lg" }} mx="auto" mt={8} p={6} textAlign="center">
-        <Heading as="h2" size="md" mb={4}>Analytics</Heading>
+      <Box
+        maxW={{ base: "100%", md: "lg" }}
+        mx="auto"
+        mt={8}
+        p={6}
+        textAlign="center"
+      >
+        <Heading as="h2" size="md" mb={4}>
+          Analytics
+        </Heading>
         <Text>No recipes saved yet.</Text>
       </Box>
     );
   }
 
   // Most/least expensive recipes
-  const sorted = [...recipes].sort((a, b) => b.costPerServing - a.costPerServing);
+  const sorted = [...recipes].sort(
+    (a, b) => b.costPerServing - a.costPerServing
+  );
   const mostExpensive = sorted[0];
   const leastExpensive = sorted[sorted.length - 1];
-  const avgCost = recipes.reduce((sum, r) => sum + r.costPerServing, 0) / recipes.length;
+  const avgCost =
+    recipes.reduce((sum, r) => sum + r.costPerServing, 0) / recipes.length;
 
   // Ingredient frequency
   const ingredientMap: Record<string, number> = {};
@@ -58,16 +80,22 @@ export default function AnalyticsDashboard() {
 
   return (
     <Box maxW={{ base: "100%", md: "5xl" }} mx="auto" mt={8} p={6}>
-      <Heading as="h2" size="lg" mb={6} textAlign="center">Analytics Dashboard</Heading>
+      <Heading as="h2" size="lg" mb={6} textAlign="center">
+        Analytics Dashboard
+      </Heading>
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mb={8}>
         <Stat>
           <StatLabel>Most Expensive Recipe</StatLabel>
-          <StatNumber fontSize="xl">${mostExpensive.costPerServing.toFixed(2)}</StatNumber>
+          <StatNumber fontSize="xl">
+            ${mostExpensive.costPerServing.toFixed(2)}
+          </StatNumber>
           <StatHelpText>{mostExpensive.name}</StatHelpText>
         </Stat>
         <Stat>
           <StatLabel>Least Expensive Recipe</StatLabel>
-          <StatNumber fontSize="xl">${leastExpensive.costPerServing.toFixed(2)}</StatNumber>
+          <StatNumber fontSize="xl">
+            ${leastExpensive.costPerServing.toFixed(2)}
+          </StatNumber>
           <StatHelpText>{leastExpensive.name}</StatHelpText>
         </Stat>
         <Stat>
@@ -76,7 +104,9 @@ export default function AnalyticsDashboard() {
         </Stat>
       </SimpleGrid>
       <Divider mb={6} />
-      <Heading as="h3" size="md" mb={4}>Top Ingredients (by usage)</Heading>
+      <Heading as="h3" size="md" mb={4}>
+        Top Ingredients (by usage)
+      </Heading>
       <Stack spacing={2}>
         {topIngredients.length === 0 ? (
           <Text>No ingredients found.</Text>

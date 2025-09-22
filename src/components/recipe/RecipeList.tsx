@@ -12,6 +12,7 @@ interface Recipe {
   totalCost: number;
   costPerServing: number;
   createdAt: number;
+  tags?: string[];
 }
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -42,6 +43,7 @@ function RecipeList() {
   const [search, setSearch] = useState("");
   const [maxCost, setMaxCost] = useState("");
   const [importError, setImportError] = useState<string | null>(null);
+  const [tagFilter, setTagFilter] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   // Export recipes as JSON
@@ -120,12 +122,19 @@ function RecipeList() {
     );
   }
 
-  // Filter recipes by search and max cost
+  // Collect all unique tags for filter dropdown
+  const allTags = Array.from(
+    new Set(recipes.flatMap((r) => r.tags || []))
+  ).sort();
+
+  // Filter recipes by search, max cost, and tag
   const filtered = recipes.filter((r) => {
     const matchesName = r.name.toLowerCase().includes(search.toLowerCase());
     const matchesCost =
       maxCost === "" || r.costPerServing <= parseFloat(maxCost);
-    return matchesName && matchesCost;
+    const matchesTag =
+      !tagFilter || (r.tags && r.tags.includes(tagFilter));
+    return matchesName && matchesCost && matchesTag;
   });
 
   return (
@@ -216,6 +225,21 @@ function RecipeList() {
             fontSize={{ base: "sm", md: "md" }}
           />
         </NumberInput>
+        {/* Tag filter dropdown */}
+        <Box minW={{ base: "100%", sm: "160px" }}>
+          <select
+            value={tagFilter}
+            onChange={(e) => setTagFilter(e.target.value)}
+            style={{ width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid #CBD5E0" }}
+          >
+            <option value="">All Categories</option>
+            {allTags.map((tag) => (
+              <option key={tag} value={tag}>
+                {tag}
+              </option>
+            ))}
+          </select>
+        </Box>
         <Button
           colorScheme="teal"
           size={{ base: "md", md: "lg" }}
@@ -246,6 +270,24 @@ function RecipeList() {
               <Text fontSize={{ base: "xs", md: "sm" }} color="gray.500">
                 Servings: {recipe.servings}
               </Text>
+              {recipe.tags && recipe.tags.length > 0 && (
+                <Flex mt={1} gap={1} flexWrap="wrap">
+                  {recipe.tags.map((tag) => (
+                    <Box
+                      key={tag}
+                      px={2}
+                      py={0.5}
+                      bg="teal.100"
+                      color="teal.800"
+                      borderRadius="md"
+                      fontSize="xs"
+                      fontWeight="semibold"
+                    >
+                      {tag}
+                    </Box>
+                  ))}
+                </Flex>
+              )}
             </CardHeader>
             <Divider />
             <CardBody py={2}>
