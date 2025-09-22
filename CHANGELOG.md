@@ -1,4 +1,9 @@
+
 # Changelog
+
+## [0.4.0] - 2025-09-22
+### Added
+- Users can now search recipes by name and filter by max cost per serving in the recipe list.
 
 ## [0.3.0] - 2025-09-22
 

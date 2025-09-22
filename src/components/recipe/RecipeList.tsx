@@ -1,19 +1,4 @@
-import { useEffect, useState } from "react";
-import RecipeDetail from "./RecipeDetail";
-import RecipeEntry from "./RecipeEntry";
-import {
-  Box,
-  Heading,
-  Text,
-  Stack,
-  SimpleGrid,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Divider,
-} from "@chakra-ui/react";
-
+// Type definitions
 interface Ingredient {
   name: string;
   quantity: number;
@@ -28,11 +13,36 @@ interface Recipe {
   costPerServing: number;
   createdAt: number;
 }
+import { useEffect, useState } from "react";
+import RecipeDetail from "./RecipeDetail";
+import RecipeEntry from "./RecipeEntry";
+import {
+  Box,
+  Heading,
+  Text,
+  Stack,
+  SimpleGrid,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Divider,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  NumberInput,
+  NumberInputField,
+  Flex,
+  Icon,
+} from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
 
 function RecipeList() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selected, setSelected] = useState<Recipe | null>(null);
   const [editing, setEditing] = useState<Recipe | null>(null);
+  const [search, setSearch] = useState("");
+  const [maxCost, setMaxCost] = useState("");
 
   useEffect(() => {
     const stored = localStorage.getItem("recipes");
@@ -98,13 +108,43 @@ function RecipeList() {
     );
   }
 
+  // Filter recipes by search and max cost
+  const filtered = recipes.filter((r) => {
+    const matchesName = r.name.toLowerCase().includes(search.toLowerCase());
+    const matchesCost =
+      maxCost === "" || r.costPerServing <= parseFloat(maxCost);
+    return matchesName && matchesCost;
+  });
+
   return (
     <Box maxW="5xl" mx="auto" mt={8} p={6}>
       <Heading as="h2" size="lg" mb={6} textAlign="center">
         Saved Recipes
       </Heading>
+      <Flex mb={6} gap={4} flexWrap="wrap" justify="center">
+        <InputGroup maxW="300px">
+          <InputLeftElement pointerEvents="none">
+            <Icon as={SearchIcon} color="gray.400" />
+          </InputLeftElement>
+          <Input
+            placeholder="Search by name"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            bg="white"
+          />
+        </InputGroup>
+        <NumberInput
+          maxW="200px"
+          min={0}
+          step={0.01}
+          value={maxCost}
+          onChange={(_, n) => setMaxCost(n === undefined ? "" : String(n))}
+        >
+          <NumberInputField placeholder="Max $/serving" bg="white" />
+        </NumberInput>
+      </Flex>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-        {recipes.map((recipe, idx) => (
+        {filtered.map((recipe, idx) => (
           <Card
             key={recipe.createdAt || idx}
             boxShadow="md"
