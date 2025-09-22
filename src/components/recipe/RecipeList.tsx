@@ -13,7 +13,7 @@ interface Recipe {
   costPerServing: number;
   createdAt: number;
 }
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -41,7 +41,48 @@ function RecipeList() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [search, setSearch] = useState("");
   const [maxCost, setMaxCost] = useState("");
+  const [importError, setImportError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
+  // Export recipes as JSON
+  const handleExport = () => {
+    const data = localStorage.getItem("recipes");
+    if (!data) return;
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "recipes-backup.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Import recipes from JSON
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setImportError(null);
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const text = event.target?.result as string;
+        const imported = JSON.parse(text);
+        if (!Array.isArray(imported)) throw new Error("Invalid format");
+        // Basic validation: check for required fields
+        for (const r of imported) {
+          if (!r.name || !r.ingredients || !r.totalCost)
+            throw new Error("Missing fields");
+        }
+        localStorage.setItem("recipes", JSON.stringify(imported));
+        setRecipes(imported);
+      } catch {
+        setImportError(
+          "Invalid or corrupt file. Please select a valid recipes-backup.json."
+        );
+      }
+    };
+    reader.readAsText(file);
+  };
 
   useEffect(() => {
     const stored = localStorage.getItem("recipes");
@@ -102,6 +143,43 @@ function RecipeList() {
       >
         Saved Recipes
       </Heading>
+
+      {/* Import/Export Controls */}
+      <Flex mb={4} gap={2} flexWrap="wrap" justify="center" align="center">
+        <Button
+          colorScheme="gray"
+          variant="outline"
+          size={{ base: "sm", md: "md" }}
+          onClick={handleExport}
+        >
+          Export Recipes
+        </Button>
+        <Button
+          as="label"
+          colorScheme="gray"
+          variant="outline"
+          size={{ base: "sm", md: "md" }}
+          cursor="pointer"
+        >
+          Import Recipes
+          <input
+            type="file"
+            accept="application/json"
+            style={{ display: "none" }}
+            ref={fileInputRef}
+            onChange={handleImport}
+          />
+        </Button>
+        <Text fontSize="xs" color="gray.500" ml={2}>
+          (Backup or transfer your recipes. Import replaces all recipes.)
+        </Text>
+      </Flex>
+      {importError && (
+        <Text color="red.500" fontSize="sm" textAlign="center" mb={2}>
+          {importError}
+        </Text>
+      )}
+
       <Flex
         mb={{ base: 4, md: 6 }}
         gap={4}

@@ -39,11 +39,21 @@ export default function RecipeDetail() {
 
   if (!recipe) {
     return (
-      <Box maxW={{ base: "100%", md: "lg" }} mx="auto" mt={{ base: 2, md: 8 }} p={{ base: 2, md: 6 }} textAlign="center">
+      <Box
+        maxW={{ base: "100%", md: "lg" }}
+        mx="auto"
+        mt={{ base: 2, md: 8 }}
+        p={{ base: 2, md: 6 }}
+        textAlign="center"
+      >
         <Heading as="h2" size={{ base: "md", md: "lg" }} mb={4}>
           Recipe Not Found
         </Heading>
-        <Button colorScheme="blue" size={{ base: "md", md: "lg" }} onClick={() => navigate("/")}>
+        <Button
+          colorScheme="blue"
+          size={{ base: "md", md: "lg" }}
+          onClick={() => navigate("/")}
+        >
           Back to List
         </Button>
       </Box>
@@ -74,10 +84,20 @@ export default function RecipeDetail() {
       borderRadius="md"
       boxShadow="md"
     >
-      <Heading as="h2" size={{ base: "md", md: "lg" }} mb={4} textAlign="center">
+      <Heading
+        as="h2"
+        size={{ base: "md", md: "lg" }}
+        mb={4}
+        textAlign="center"
+      >
         {recipe.name}
       </Heading>
-      <Text fontSize={{ base: "sm", md: "md" }} color="gray.600" mb={2} textAlign="center">
+      <Text
+        fontSize={{ base: "sm", md: "md" }}
+        color="gray.600"
+        mb={2}
+        textAlign="center"
+      >
         Servings: {recipe.servings}
       </Text>
       <Divider mb={4} />
@@ -92,12 +112,24 @@ export default function RecipeDetail() {
         ))}
       </Stack>
       <Divider mb={4} />
-      <Text fontWeight="bold" fontSize={{ base: "sm", md: "md" }}>Total Cost: ${recipe.totalCost.toFixed(2)}</Text>
+      <Text fontWeight="bold" fontSize={{ base: "sm", md: "md" }}>
+        Total Cost: ${recipe.totalCost.toFixed(2)}
+      </Text>
       <Text fontWeight="bold" mb={4} fontSize={{ base: "sm", md: "md" }}>
         Cost per Serving: ${recipe.costPerServing.toFixed(2)}
       </Text>
-      <Stack direction={{ base: "column", sm: "row" }} spacing={3} mt={4} align="center" justify="center">
-        <Button colorScheme="blue" size={{ base: "md", md: "lg" }} onClick={() => navigate("/")}>
+      <Stack
+        direction={{ base: "column", sm: "row" }}
+        spacing={3}
+        mt={4}
+        align="center"
+        justify="center"
+      >
+        <Button
+          colorScheme="blue"
+          size={{ base: "md", md: "lg" }}
+          onClick={() => navigate("/")}
+        >
           Back to List
         </Button>
         <Button
@@ -107,7 +139,11 @@ export default function RecipeDetail() {
         >
           Edit
         </Button>
-        <Button colorScheme="red" size={{ base: "md", md: "lg" }} onClick={() => setShowConfirm(true)}>
+        <Button
+          colorScheme="red"
+          size={{ base: "md", md: "lg" }}
+          onClick={() => setShowConfirm(true)}
+        >
           Delete
         </Button>
       </Stack>
@@ -123,10 +159,20 @@ export default function RecipeDetail() {
           <Text mb={2} color="red.600" fontSize={{ base: "sm", md: "md" }}>
             Are you sure you want to delete this recipe?
           </Text>
-          <Button colorScheme="red" mr={2} size={{ base: "md", md: "lg" }} onClick={handleDelete}>
+          <Button
+            colorScheme="red"
+            mr={2}
+            size={{ base: "md", md: "lg" }}
+            onClick={handleDelete}
+          >
             Yes, Delete
           </Button>
-          <Button size={{ base: "md", md: "lg" }} onClick={() => setShowConfirm(false)}>Cancel</Button>
+          <Button
+            size={{ base: "md", md: "lg" }}
+            onClick={() => setShowConfirm(false)}
+          >
+            Cancel
+          </Button>
         </Box>
       )}
     </Box>
