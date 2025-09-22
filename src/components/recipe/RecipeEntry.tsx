@@ -160,55 +160,57 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
 
   return (
     <Box
-      maxW="lg"
+      maxW={{ base: "100%", md: "lg" }}
       mx="auto"
-      mt={8}
-      p={6}
+      mt={{ base: 2, md: 8 }}
+      p={{ base: 2, md: 6 }}
       borderWidth={1}
       borderRadius="md"
       boxShadow="md"
     >
-      <Heading as="h2" size="lg" mb={4} textAlign="center">
+      <Heading as="h2" size={{ base: "md", md: "lg" }} mb={4} textAlign="center">
         {isEditMode ? "Edit Recipe" : "Add a Recipe"}
       </Heading>
       <form onSubmit={handleSubmit}>
         <Stack spacing={4}>
           <FormControl isRequired>
-            <FormLabel>Recipe Name</FormLabel>
+            <FormLabel fontSize={{ base: "sm", md: "md" }}>Recipe Name</FormLabel>
             <Input
               value={recipeName}
               onChange={(e) => setRecipeName(e.target.value)}
               placeholder="e.g. Spaghetti Bolognese"
+              fontSize={{ base: "sm", md: "md" }}
             />
           </FormControl>
           <FormControl isRequired>
-            <FormLabel>Servings</FormLabel>
+            <FormLabel fontSize={{ base: "sm", md: "md" }}>Servings</FormLabel>
             <NumberInput
               min={1}
               value={servings}
               onChange={(_, n) => setServings(n)}
             >
-              <NumberInputField />
+              <NumberInputField fontSize={{ base: "sm", md: "md" }} />
             </NumberInput>
           </FormControl>
           <Divider />
-          <Heading as="h3" size="md" mb={2} textAlign="center">
+          <Heading as="h3" size={{ base: "sm", md: "md" }} mb={2} textAlign="center">
             Ingredients
           </Heading>
           {ingredients.map((ing, idx) => (
-            <HStack key={idx} align="flex-end">
-              <FormControl isRequired>
-                <FormLabel>Name</FormLabel>
+            <Stack key={idx} direction={{ base: "column", sm: "row" }} spacing={2} align="flex-end">
+              <FormControl isRequired w={{ base: "100%", sm: "auto" }}>
+                <FormLabel fontSize={{ base: "sm", md: "md" }}>Name</FormLabel>
                 <Input
                   value={ing.name}
                   onChange={(e) =>
                     handleIngredientChange(idx, "name", e.target.value)
                   }
                   placeholder="e.g. Ground Beef"
+                  fontSize={{ base: "sm", md: "md" }}
                 />
               </FormControl>
-              <FormControl isRequired w="120px">
-                <FormLabel>Quantity</FormLabel>
+              <FormControl isRequired w={{ base: "100%", sm: "120px" }}>
+                <FormLabel fontSize={{ base: "sm", md: "md" }}>Quantity</FormLabel>
                 <NumberInput
                   min={1}
                   value={ing.quantity}
@@ -216,11 +218,11 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
                     handleIngredientChange(idx, "quantity", n)
                   }
                 >
-                  <NumberInputField />
+                  <NumberInputField fontSize={{ base: "sm", md: "md" }} />
                 </NumberInput>
               </FormControl>
-              <FormControl isRequired w="140px">
-                <FormLabel>Cost ($)</FormLabel>
+              <FormControl isRequired w={{ base: "100%", sm: "140px" }}>
+                <FormLabel fontSize={{ base: "sm", md: "md" }}>Cost ($)</FormLabel>
                 <Input
                   type="number"
                   min="0"
@@ -231,6 +233,7 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
                     handleIngredientChange(idx, "cost", e.target.value)
                   }
                   placeholder="e.g. 2.50"
+                  fontSize={{ base: "sm", md: "md" }}
                 />
               </FormControl>
               <IconButton
@@ -240,25 +243,27 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
                 variant="ghost"
                 onClick={() => removeIngredient(idx)}
                 isDisabled={ingredients.length === 1}
+                size={{ base: "sm", md: "md" }}
               />
-            </HStack>
+            </Stack>
           ))}
           <Button
             onClick={addIngredient}
             colorScheme="blue"
             variant="outline"
-            w="fit-content"
+            w={{ base: "100%", sm: "fit-content" }}
+            size={{ base: "md", md: "lg" }}
           >
             + Add Ingredient
           </Button>
           <Divider />
           <Box>
-            <Text fontWeight="bold">Total Cost: ${totalCost.toFixed(2)}</Text>
-            <Text fontWeight="bold">
+            <Text fontWeight="bold" fontSize={{ base: "sm", md: "md" }}>Total Cost: ${totalCost.toFixed(2)}</Text>
+            <Text fontWeight="bold" fontSize={{ base: "sm", md: "md" }}>
               Cost per Serving: ${costPerServing.toFixed(2)}
             </Text>
           </Box>
-          <Button colorScheme="green" type="submit" isDisabled={!isFormValid}>
+          <Button colorScheme="green" type="submit" isDisabled={!isFormValid} size={{ base: "md", md: "lg" }}>
             {isEditMode ? "Save Changes" : "Save Recipe"}
           </Button>
           {isEditMode && (
@@ -266,6 +271,7 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
               onClick={() => navigate(id ? `/recipe/${id}` : "/")}
               colorScheme="gray"
               variant="outline"
+              size={{ base: "md", md: "lg" }}
             >
               Cancel
             </Button>

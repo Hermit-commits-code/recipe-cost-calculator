@@ -56,12 +56,23 @@ function RecipeList() {
 
   if (recipes.length === 0) {
     return (
-      <Box maxW="lg" mx="auto" mt={8} p={6} textAlign="center">
-        <Heading as="h2" size="lg" mb={4}>
+      <Box
+        maxW={{ base: "100%", md: "lg" }}
+        mx="auto"
+        mt={{ base: 2, md: 8 }}
+        p={{ base: 2, md: 6 }}
+        textAlign="center"
+      >
+        <Heading as="h2" size={{ base: "md", md: "lg" }} mb={4}>
           Saved Recipes
         </Heading>
-        <Text>No recipes saved yet.</Text>
-        <Button mt={4} colorScheme="teal" onClick={() => navigate("/add")}>
+        <Text fontSize={{ base: "sm", md: "md" }}>No recipes saved yet.</Text>
+        <Button
+          mt={4}
+          colorScheme="teal"
+          size={{ base: "md", md: "lg" }}
+          onClick={() => navigate("/add")}
+        >
           + Add Recipe
         </Button>
       </Box>
@@ -77,12 +88,32 @@ function RecipeList() {
   });
 
   return (
-    <Box maxW="5xl" mx="auto" mt={8} p={6}>
-      <Heading as="h2" size="lg" mb={6} textAlign="center">
+    <Box
+      maxW={{ base: "100%", md: "5xl" }}
+      mx="auto"
+      mt={{ base: 2, md: 8 }}
+      p={{ base: 2, md: 6 }}
+    >
+      <Heading
+        as="h2"
+        size={{ base: "md", md: "lg" }}
+        mb={{ base: 4, md: 6 }}
+        textAlign="center"
+      >
         Saved Recipes
       </Heading>
-      <Flex mb={6} gap={4} flexWrap="wrap" justify="center">
-        <InputGroup maxW="300px">
+      <Flex
+        mb={{ base: 4, md: 6 }}
+        gap={4}
+        flexWrap={{ base: "wrap", md: "nowrap" }}
+        direction={{ base: "column", sm: "row" }}
+        align={{ base: "stretch", sm: "center" }}
+        justify="center"
+      >
+        <InputGroup
+          maxW={{ base: "100%", sm: "300px" }}
+          mb={{ base: 2, sm: 0 }}
+        >
           <InputLeftElement pointerEvents="none">
             <Icon as={SearchIcon} color="gray.400" />
           </InputLeftElement>
@@ -91,22 +122,34 @@ function RecipeList() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             bg="white"
+            fontSize={{ base: "sm", md: "md" }}
           />
         </InputGroup>
         <NumberInput
-          maxW="200px"
+          maxW={{ base: "100%", sm: "200px" }}
           min={0}
           step={0.01}
           value={maxCost}
           onChange={(_, n) => setMaxCost(n === undefined ? "" : String(n))}
         >
-          <NumberInputField placeholder="Max $/serving" bg="white" />
+          <NumberInputField
+            placeholder="Max $/serving"
+            bg="white"
+            fontSize={{ base: "sm", md: "md" }}
+          />
         </NumberInput>
-        <Button colorScheme="teal" onClick={() => navigate("/add")}>
+        <Button
+          colorScheme="teal"
+          size={{ base: "md", md: "lg" }}
+          onClick={() => navigate("/add")}
+        >
           + Add Recipe
         </Button>
       </Flex>
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+      <SimpleGrid
+        columns={{ base: 1, sm: 2, md: 2 }}
+        spacing={{ base: 4, md: 6 }}
+      >
         {filtered.map((recipe, idx) => (
           <Card
             key={recipe.createdAt || idx}
@@ -114,23 +157,30 @@ function RecipeList() {
             borderWidth={1}
             _hover={{ cursor: "pointer", bg: "gray.50" }}
             onClick={() => navigate(`/recipe/${recipe.createdAt}`)}
+            p={{ base: 2, md: 4 }}
+            borderRadius={{ base: "md", md: "lg" }}
+            minH={{ base: "auto", md: 220 }}
           >
-            <CardHeader>
-              <Heading as="h3" size="md">
+            <CardHeader pb={2}>
+              <Heading as="h3" size={{ base: "sm", md: "md" }}>
                 {recipe.name}
               </Heading>
-              <Text fontSize="sm" color="gray.500">
+              <Text fontSize={{ base: "xs", md: "sm" }} color="gray.500">
                 Servings: {recipe.servings}
               </Text>
             </CardHeader>
             <Divider />
-            <CardBody>
-              <Text fontWeight="bold" mb={2}>
+            <CardBody py={2}>
+              <Text
+                fontWeight="bold"
+                mb={2}
+                fontSize={{ base: "sm", md: "md" }}
+              >
                 Ingredients:
               </Text>
               <Stack spacing={1}>
                 {recipe.ingredients.map((ing, i) => (
-                  <Text key={i} fontSize="sm">
+                  <Text key={i} fontSize={{ base: "xs", md: "sm" }}>
                     {ing.quantity} x {ing.name} @ $
                     {parseFloat(ing.cost).toFixed(2)}
                   </Text>
@@ -138,8 +188,8 @@ function RecipeList() {
               </Stack>
             </CardBody>
             <Divider />
-            <CardFooter>
-              <Text fontWeight="bold">
+            <CardFooter pt={2}>
+              <Text fontWeight="bold" fontSize={{ base: "sm", md: "md" }}>
                 Total: ${recipe.totalCost.toFixed(2)} | Per Serving: $
                 {recipe.costPerServing.toFixed(2)}
               </Text>

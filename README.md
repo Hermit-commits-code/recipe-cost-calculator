@@ -12,7 +12,6 @@ This is a privacy-first PWA for tracking and optimizing recipe costs. Built with
 - Clean, modern UI with Chakra UI
 - Only one "+ Add Recipe" button in the recipe list for a clear, consistent user experience
 
-
 ## Roadmap & Next Steps
 
 See [ROADMAP.md](./ROADMAP.md) for the full, multi-phase roadmap and current progress.
