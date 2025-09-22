@@ -1,4 +1,5 @@
 import { Box, Heading, Text, Stack, Divider } from "@chakra-ui/react";
+import { useState } from "react";
 
 interface Ingredient {
   name: string;
@@ -19,10 +20,12 @@ interface RecipeDetailProps {
   recipe: Recipe;
   onBack: () => void;
   onEdit?: (recipe: Recipe) => void;
+  onDelete?: (recipe: Recipe) => void;
 }
 
 export default function RecipeDetail(props: RecipeDetailProps) {
-  const { recipe, onBack, onEdit } = props;
+  const { recipe, onBack, onEdit, onDelete } = props;
+  const [showConfirm, setShowConfirm] = useState(false);
   return (
     <Box
       maxW="lg"
@@ -84,7 +87,68 @@ export default function RecipeDetail(props: RecipeDetailProps) {
             Edit
           </button>
         )}
+        {onDelete && (
+          <button
+            onClick={() => setShowConfirm(true)}
+            style={{
+              padding: "8px 16px",
+              borderRadius: 4,
+              background: "#e53e3e",
+              color: "white",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            Delete
+          </button>
+        )}
       </div>
+      {showConfirm && (
+        <div
+          style={{
+            marginTop: 24,
+            background: "#fff5f5",
+            border: "1px solid #e53e3e",
+            borderRadius: 8,
+            padding: 16,
+            textAlign: "center",
+          }}
+        >
+          <Text mb={2} color="red.600">
+            Are you sure you want to delete this recipe?
+          </Text>
+          <button
+            onClick={() => {
+              if (onDelete) onDelete(recipe);
+              setShowConfirm(false);
+            }}
+            style={{
+              padding: "8px 16px",
+              borderRadius: 4,
+              background: "#e53e3e",
+              color: "white",
+              border: "none",
+              cursor: "pointer",
+              marginRight: 8,
+            }}
+          >
+            Yes, Delete
+          </button>
+          <button
+            onClick={() => setShowConfirm(false)}
+            style={{
+              padding: "8px 16px",
+              borderRadius: 4,
+              background: "#a0aec0",
+              color: "white",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
     </Box>
   );
 }

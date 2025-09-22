@@ -68,12 +68,21 @@ function RecipeList() {
     );
   }
 
+  // Handler to delete recipe
+  const handleDelete = (toDelete: Recipe) => {
+    const updated = recipes.filter((r) => r.createdAt !== toDelete.createdAt);
+    setRecipes(updated);
+    localStorage.setItem("recipes", JSON.stringify(updated));
+    setSelected(null);
+  };
+
   if (selected) {
     return (
       <RecipeDetail
         recipe={selected}
         onBack={() => setSelected(null)}
         onEdit={(r) => setEditing(r)}
+        onDelete={handleDelete}
       />
     );
   }
