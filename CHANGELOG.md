@@ -1,0 +1,9 @@
+# Changelog
+
+## [Unreleased]
+
+### Changed
+
+- Switched project styling from Tailwind CSS to Chakra UI for easier setup and modern component-based styling.
+- Removed all Tailwind CSS and PostCSS configuration and dependencies.
+- Added Chakra UI and peer dependencies. Updated `App.tsx` to use Chakra UI components for a test banner.
