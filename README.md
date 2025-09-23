@@ -16,16 +16,21 @@ This is a privacy-first PWA for tracking and optimizing recipe costs. Built with
 
 See [ROADMAP.md](./ROADMAP.md) for the full, multi-phase roadmap and current progress.
 
-
 ### Immediate Priorities
 
 - ~~Polish mobile UX & responsive layout~~ (done)
 - ~~Add recipe import/export (JSON)~~ (done)
 - ~~Build a basic analytics dashboard~~ (done)
 - ~~Add recipe organization (categories/tags)~~ (done)
-- Complete full PWA support
+- ~~Complete full PWA support~~ (done)
 
 Premium and advanced features will follow after these core improvements.
+
+---
+
+## PWA Support
+
+The app is now a full PWA: installable, with offline support and a manifest. Add it to your home screen for a native-like experience.
 
 ---
 

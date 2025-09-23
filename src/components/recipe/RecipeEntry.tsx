@@ -73,7 +73,8 @@ export default function RecipeEntry(props: RecipeEntryProps = {}) {
 
   const totalCost = ingredients.reduce(
     (sum, ing) =>
-      sum + (isNaN(parseFloat(ing.cost)) ? 0 : parseFloat(ing.cost)),
+      sum +
+      (isNaN(parseFloat(ing.cost)) ? 0 : parseFloat(ing.cost) * ing.quantity),
     0
   );
   const costPerServing = servings > 0 ? totalCost / servings : 0;

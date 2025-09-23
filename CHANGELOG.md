@@ -1,3 +1,9 @@
+## [0.9.0] - 2025-09-22
+
+### Added
+
+- Full PWA support: app is now installable, has a manifest, and works offline with a service worker.
+
 ## [0.8.0] - 2025-09-22
 
 ### Added

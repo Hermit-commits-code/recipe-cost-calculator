@@ -132,8 +132,7 @@ function RecipeList() {
     const matchesName = r.name.toLowerCase().includes(search.toLowerCase());
     const matchesCost =
       maxCost === "" || r.costPerServing <= parseFloat(maxCost);
-    const matchesTag =
-      !tagFilter || (r.tags && r.tags.includes(tagFilter));
+    const matchesTag = !tagFilter || (r.tags && r.tags.includes(tagFilter));
     return matchesName && matchesCost && matchesTag;
   });
 
@@ -230,7 +229,12 @@ function RecipeList() {
           <select
             value={tagFilter}
             onChange={(e) => setTagFilter(e.target.value)}
-            style={{ width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid #CBD5E0" }}
+            style={{
+              width: "100%",
+              padding: "8px",
+              borderRadius: "6px",
+              border: "1px solid #CBD5E0",
+            }}
           >
             <option value="">All Categories</option>
             {allTags.map((tag) => (
